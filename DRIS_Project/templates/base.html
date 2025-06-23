@@ -1,0 +1,50 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}DRIS - Disaster Response Information System{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<header>
+    <img src="{% static 'images/nadma_logo.png' %}" alt="NADMA Logo" height="50">
+    <span>Emergency Hotline: <strong>999</strong></span>
+</header>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/disaster_reports/">Disaster Reports</a>
+    <a href="/shelters/">Shelters</a>
+
+    {% if request.user.is_authenticated %}
+        {% if request.user.role == "Citizen" %}
+            <a href="/submit_disaster/">Report Disaster</a>
+            <a href="/aid_request/">Request Aid</a>
+            <a href="/my_requests/">My Requests</a>
+        {% elif request.user.role == "Volunteer" %}
+            <a href="/volunteer_info/">My Volunteer Info</a>
+            <a href="/my_tasks/">My Tasks</a>
+        {% elif request.user.role == "Authority" %}
+            <a href="/assign_volunteer/">Assign Volunteers</a>
+            <a href="/assign_shelter/">Assign to Shelter</a>
+        {% endif %}
+        <a href="/logout/">Logout</a>
+    {% else %}
+        <a href="/login/">Login</a>
+        <a href="/register/">Register</a>
+    {% endif %}
+</nav>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <p>© 2025 NADMA | Amir Ali Malekani Nezhad | S2009460</p>
+</footer>
+
+</body>
+</html>

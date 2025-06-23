@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Register</h2>
+<form method="post">
+    {% csrf_token %}
+    <label>Username:</label>
+    <input type="text" name="username" required>
+    
+    <label>Password:</label>
+    <input type="password" name="password" required>
+    
+    <label>Phone Number:</label>
+    <input type="text" name="phone_number">
+    
+    <label>Role:</label>
+    <select name="role">
+        <option value="Citizen">Citizen</option>
+        <option value="Volunteer">Volunteer</option>
+    </select>
+    
+    <button type="submit">Register</button>
+</form>
+{% endblock %}

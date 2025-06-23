@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Volunteer Information{% endblock %}
+
+{% block content %}
+<h2>Volunteer Information</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <label>Select Your Skills:</label><br>
+    {% for skill in skills %}
+        <input type="checkbox" name="skills" value="{{ skill.id }}"
+            {% if skill.id in selected_skills %}checked{% endif %}>
+        {{ skill.name }}<br>
+    {% endfor %}
+
+    <label>Are You Currently Available for Assignments?</label><br>
+    <input type="radio" name="is_available" value="True"
+        {% if is_available %}checked{% endif %}> Yes<br>
+    <input type="radio" name="is_available" value="False"
+        {% if not is_available %}checked{% endif %}> No<br><br>
+
+    <button type="submit">Save Information</button>
+</form>
+{% endblock %}

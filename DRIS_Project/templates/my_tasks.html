@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}My Tasks{% endblock %}
+
+{% block content %}
+<h2>My Assigned Tasks</h2>
+
+{% if assignments %}
+<table border="1">
+    <thead>
+        <tr>
+            <th>Disaster</th>
+            <th>Location</th>
+            <th>Aid Type</th>
+            <th>Task Description</th>
+            <th>Status</th>
+            <th>Assigned On</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for assignment in assignments %}
+        <tr>
+            <td>{{ assignment.aid_request.disaster_report.disaster_type }}</td>
+            <td>{{ assignment.aid_request.disaster_report.gps_coordinates }}</td>
+            <td>{{ assignment.aid_request.aid_type }}</td>
+            <td>{{ assignment.task_description }}</td>
+            <td>
+                {{ assignment.status }}
+                {% if assignment.status == "Completed" %}
+                    {% if assignment.citizen_confirmed %}
+                        ✅ Confirmed by citizen
+                    {% else %}
+                        ⏳ Waiting for citizen confirmation
+                    {% endif %}
+                {% endif %}
+            </td>
+            <td>{{ assignment.assignment_time }}</td>
+            <td>
+                {% if assignment.status != "Completed" %}
+                <form method="post" style="display:inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="assignment_id" value="{{ assignment.id }}">
+                    <button type="submit" onclick="return confirm('Mark this task as completed?')">Mark as Done</button>
+                </form>
+                {% else %}
+                <i>Already marked done</i>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No tasks assigned to you yet.</p>
+{% endif %}
+{% endblock %}

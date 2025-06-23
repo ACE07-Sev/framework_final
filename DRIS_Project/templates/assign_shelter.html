@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Assign Citizen to Shelter{% endblock %}
+
+{% block content %}
+<h2>Assign Citizen to Shelter</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <label>Select Shelter Request:</label>
+    <select name="aid_request" required>
+        {% for req in pending_requests %}
+        <option value="{{ req.id }}">{{ req.requester.username }} - {{ req.disaster_report.disaster_type }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Select Available Shelter:</label>
+    <select name="shelter" required>
+        {% for shelter in shelters %}
+        <option value="{{ shelter.id }}">{{ shelter.name }} ({{ shelter.availability }}/{{ shelter.capacity }})</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Assign to Shelter</button>
+</form>
+
+{% if not pending_requests %}
+<p>No pending shelter aid requests.</p>
+{% endif %}
+
+{% if not shelters %}
+<p>No shelters with available space.</p>
+{% endif %}
+{% endblock %}

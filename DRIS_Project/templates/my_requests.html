@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}My Aid Requests{% endblock %}
+
+{% block content %}
+<h2>My Aid Requests</h2>
+
+{% if messages %}
+<ul>
+    {% for message in messages %}
+        <li style="color: green;">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<form method="get">
+    <label>Filter by Status:</label>
+    <select name="status">
+        <option value="">All</option>
+        <option value="Pending" {% if status_filter == "Pending" %}selected{% endif %}>Pending</option>
+        <option value="In Progress" {% if status_filter == "In Progress" %}selected{% endif %}>In Progress</option>
+        <option value="Completed" {% if status_filter == "Completed" %}selected{% endif %}>Completed</option>
+    </select>
+
+    <label>Sort:</label>
+    <select name="sort">
+        <option value="newest" {% if sort_option != "oldest" %}selected{% endif %}>Newest First</option>
+        <option value="oldest" {% if sort_option == "oldest" %}selected{% endif %}>Oldest First</option>
+    </select>
+
+    <button type="submit">Apply</button>
+</form>
+
+{% if requests_with_volunteers %}
+<table border="1">
+    <thead>
+        <tr>
+            <th>Disaster</th>
+            <th>Location</th>
+            <th>Aid Type</th>
+            <th>Details</th>
+            <th>Status</th>
+            <th>Volunteer/Shelter</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in requests_with_volunteers %}
+        <tr>
+            <td>{{ item.request.disaster_report.disaster_type }}</td>
+            <td>{{ item.request.disaster_report.gps_coordinates }}</td>
+            <td>{{ item.request.aid_type }}</td>
+            <td>{{ item.request.details }}</td>
+            <td>
+                {% if item.request.status == "Pending" %}
+                    <span class="status-pending">Pending</span>
+                {% elif item.request.status == "In Progress" %}
+                    <span class="status-progress">In Progress</span>
+                {% elif item.request.status == "Completed" %}
+                    <span class="status-completed">Completed</span>
+                {% else %}
+                    {{ item.request.status }}
+                {% endif %}
+            </td>
+            <td>
+                {% if item.request.aid_type == "Shelter" and item.request.admitted_shelter %}
+                    Shelter: {{ item.request.admitted_shelter.name }}
+                {% elif item.assignment %}
+                    {{ item.assignment.volunteer.username }}
+                {% else %}
+                    Not assigned
+                {% endif %}
+            </td>
+            <td>
+                {% if item.request.aid_type == "Shelter" and item.request.admitted_shelter %}
+                    <form method="post" action="{% url 'leave_shelter' %}" style="display:inline">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('Leave shelter?')">Leave Shelter</button>
+                    </form>
+                {% elif item.assignment %}
+                    {% if item.assignment.status == "Completed" and not item.assignment.citizen_confirmed %}
+                        <form method="post" style="display:inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="assignment_id" value="{{ item.assignment.id }}">
+                            <button type="submit" style="background-color: lightgreen;" onclick="return confirm('Confirm task completed?')">Confirm Done</button>
+                        </form>
+                    {% elif item.assignment.citizen_confirmed %}
+                        <span style="color: green;">✅ Confirmed</span>
+                    {% else %}
+                        <span style="color: gray;">In Progress</span>
+                    {% endif %}
+                {% else %}
+                    ---
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You haven't submitted any aid requests yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Volunteer Availability{% endblock %}
+
+{% block content %}
+<h1>Volunteer Availability</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <label>Your Skills:</label>
+    <input type="text" name="skills" required>
+
+    <label>Availability (e.g., Weekends, Evenings):</label>
+    <input type="text" name="availability" required>
+
+    <button type="submit">Register</button>
+</form>
+{% endblock %}

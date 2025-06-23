@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Assign Volunteer to Aid Request</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <label>Select Available Volunteer:</label>
+    <select name="volunteer" required>
+        {% for volunteer in volunteer_infos %}
+            <option value="{{ volunteer.user.id }}">
+                {{ volunteer.user.username }} - Skills: 
+                {% if volunteer.skills %} 
+                    {{ volunteer.skills|join:", " }}
+                {% else %}
+                    No skills listed
+                {% endif %}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Select Aid Request:</label>
+    <select name="aid_request" required>
+        {% for req in aid_requests %}
+            <option value="{{ req.id }}">
+                {{ req.aid_type }} - {{ req.disaster_report.disaster_type }} ({{ req.disaster_report.gps_coordinates }})
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Task Description:</label>
+    <textarea name="task_description" rows="3" required></textarea>
+
+    <button type="submit">Assign</button>
+</form>
+
+{% if not volunteer_infos %}
+<p>No available volunteers at the moment.</p>
+{% endif %}
+
+{% if not aid_requests %}
+<p>No pending aid requests at the moment.</p>
+{% endif %}
+{% endblock %}

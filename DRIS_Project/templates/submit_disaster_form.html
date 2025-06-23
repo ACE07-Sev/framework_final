@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Report a Disaster</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <label>Disaster Type:</label>
+    <select name="disaster_type">
+        <option value="Flood">Flood</option>
+        <option value="Landslide">Landslide</option>
+        <option value="Haze">Haze</option>
+    </select>
+
+    <label>GPS Coordinates:</label>
+    <input type="text" name="gps_coordinates" placeholder="e.g., 3.1390, 101.6869" required>
+
+    <label>Severity (1 to 5):</label>
+    <input type="number" name="severity" min="1" max="5" required>
+
+    <label>Description:</label>
+    <textarea name="description" rows="3"></textarea>
+
+    <button type="submit">Submit Report</button>
+</form>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Shelter Directory{% endblock %}
+
+{% block content %}
+<h2>Shelter Directory</h2>
+
+{% if request.user.role == "Authority" %}
+<h3>Add New Shelter</h3>
+<form method="post">
+    {% csrf_token %}
+    <label>Name:</label>
+    <input type="text" name="name" required>
+
+    <label>Location:</label>
+    <input type="text" name="location" required>
+
+    <label>Capacity:</label>
+    <input type="number" name="capacity" min="1" required>
+
+    <button type="submit">Add Shelter</button>
+</form>
+{% endif %}
+
+<h3>Available Shelters</h3>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Capacity</th>
+            <th>Availability</th>
+            <th>Managed By</th>
+            {% if request.user.role == "Authority" %}
+            <th>Actions</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for shelter in shelters %}
+        <tr>
+            <td>{{ shelter.name }}</td>
+            <td>{{ shelter.location }}</td>
+            <td>{{ shelter.capacity }}</td>
+            <td>{{ shelter.availability }}</td>
+            <td>{{ shelter.managed_by.username }}</td>
+            {% if request.user.role == "Authority" and shelter.managed_by == request.user %}
+            <td>
+                <a href="{% url 'edit_shelter' shelter.id %}">Edit</a> |
+                <a href="{% url 'delete_shelter' shelter.id %}" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

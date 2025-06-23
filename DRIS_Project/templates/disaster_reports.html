@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Disaster Reports{% endblock %}
+
+{% block content %}
+<h1>Disaster Reports</h1>
+
+<form method="get">
+    <label>Type:</label>
+    <select name="type">
+        <option value="">All</option>
+        <option value="Flood">Flood</option>
+        <option value="Landslide">Landslide</option>
+        <option value="Haze">Haze</option>
+    </select>
+
+    <label>Severity:</label>
+    <select name="severity">
+        <option value="">All</option>
+        <option value="1">1 - Low</option>
+        <option value="2">2</option>
+        <option value="3">3 - Moderate</option>
+        <option value="4">4</option>
+        <option value="5">5 - High</option>
+    </select>
+
+    <label>Location Search (GPS or Keyword):</label>
+    <input type="text" name="location" placeholder="Search by location">
+
+    <label>Date (YYYY-MM-DD):</label>
+    <input type="date" name="date">
+
+    <button type="submit">Filter</button>
+</form>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Disaster Report ID</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Severity</th>
+            <th>Reporter</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for report in reports %}
+        <tr>
+            <td>{{ report.id }}</td>
+            <td>{{ report.disaster_type }}</td>
+            <td>{{ report.gps_coordinates }}</td>
+            <td>{{ report.severity }}</td>
+            <td>{{ report.reporter.username }}</td>
+            <td>{{ report.timestamp }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No reports found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

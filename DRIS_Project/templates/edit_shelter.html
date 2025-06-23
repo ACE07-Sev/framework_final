@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Shelter{% endblock %}
+
+{% block content %}
+<h2>Edit Shelter</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <label>Name:</label>
+    <input type="text" name="name" value="{{ shelter.name }}" required>
+
+    <label>Location:</label>
+    <input type="text" name="location" value="{{ shelter.location }}" required>
+
+    <label>Capacity:</label>
+    <input type="number" name="capacity" min="1" value="{{ shelter.capacity }}" required>
+
+    <label>Availability:</label>
+    <input type="number" name="availability" min="0" value="{{ shelter.availability }}" required>
+
+    <button type="submit">Save Changes</button>
+</form>
+{% endblock %}
